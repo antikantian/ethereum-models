@@ -1,5 +1,5 @@
 [package]
-name = "ethereum_models"
+name = "ethereum-models"
 version = "0.1.0"
 authors = ["Etherswap.io <admin@etherswap.io>"]
 
