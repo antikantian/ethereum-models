@@ -16,6 +16,7 @@ pub struct ParityTrace {
     pub trace_address: Vec<u8>,
     pub transaction_hash: H256,
     pub transaction_position: u64,
+    #[serde(rename = "type")]
     pub action_type: CallType
 }
 
