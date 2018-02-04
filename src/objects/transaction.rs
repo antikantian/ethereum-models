@@ -1,8 +1,11 @@
 use ethereum_types::{H160, H256, U256};
 use rustc_serialize::hex::ToHex;
 use web3::types::{
-    Transaction as Web3Transaction
+    Transaction as Web3Transaction,
+    TransactionReceipt as Web3TransactionReceipt
 };
+
+use objects::Log;
 
 #[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -34,6 +37,34 @@ impl From<Web3Transaction> for Transaction {
             gas_price: U256::from(tx.gas_price.0),
             gas: U256::from(tx.gas.0),
             input: String::from("0x") + &tx.input.0.to_hex()
+        }
+    }
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TransactionReceipt {
+    pub transaction_hash: H256,
+    pub transaction_index: u64,
+    pub block_number: U256,
+    pub block_hash: H256,
+    pub cumulative_gas_used: U256,
+    pub gas_used: U256,
+    pub contract_address: Option<H160>,
+    pub logs: Vec<Log>
+}
+
+impl From<Web3TransactionReceipt> for TransactionReceipt {
+    fn from(tr: Web3TransactionReceipt) -> Self {
+        TransactionReceipt {
+            transaction_hash: H256::from(tr.transaction_hash.0),
+            transaction_index: tr.transaction_index.low_u64(),
+            block_number: U256::from(tr.block_number.0),
+            block_hash: H256::from(tr.block_hash.0),
+            cumulative_gas_used: U256::from(tr.cumulative_gas_used.0),
+            gas_used: U256::from(tr.gas_used.0),
+            contract_address: tr.contract_address.map(|ca| H160::from(ca.0)),
+            logs: tr.logs.into_iter().map(|web3_log| Log::from(web3_log)).collect()
         }
     }
 }
