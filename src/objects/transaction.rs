@@ -7,6 +7,54 @@ use web3::types::{
 
 use objects::Log;
 
+pub trait TransactionLike {
+    fn get_tx(&self) -> &Transaction;
+
+    fn tx_hash(&self) -> &H256 {
+        &self.get_tx().hash
+    }
+
+    fn nonce(&self) -> &U256 {
+        &self.get_tx().nonce
+    }
+
+    fn block_hash(&self) -> Option<&H256> {
+        self.get_tx().block_hash.as_ref()
+    }
+
+    fn block_number(&self) -> Option<&U256> {
+        self.get_tx().block_number.as_ref()
+    }
+
+    fn transaction_index(&self) -> Option<u64> {
+        self.get_tx().transaction_index
+    }
+
+    fn tx_from(&self) -> &H160 {
+        &self.get_tx().from
+    }
+
+    fn tx_to(&self) -> Option<&H160> {
+        self.get_tx().to.as_ref()
+    }
+
+    fn tx_value(&self) -> &U256 {
+        &self.get_tx().value
+    }
+
+    fn tx_gas_price(&self) -> &U256 {
+        &self.get_tx().gas_price
+    }
+
+    fn tx_gas_limit(&self) -> &U256 {
+        &self.get_tx().gas
+    }
+
+    fn tx_input(&self) -> &str {
+        self.get_tx().input.as_str()
+    }
+}
+
 #[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Transaction {
@@ -38,6 +86,18 @@ impl From<Web3Transaction> for Transaction {
             gas: U256::from(tx.gas.0),
             input: String::from("0x") + &tx.input.0.to_hex()
         }
+    }
+}
+
+pub trait ReceiptLike {
+    fn get_receipt(&self) -> &TransactionReceipt;
+
+    fn gas_used(&self) -> &U256 {
+        &self.get_receipt().gas_used
+    }
+
+    fn receipt_logs(&self) -> &Vec<Log> {
+        self.get_receipt().logs.as_ref()
     }
 }
 

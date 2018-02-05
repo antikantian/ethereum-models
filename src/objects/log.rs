@@ -2,6 +2,70 @@ use ethereum_types::{H160, H256, U256};
 use rustc_serialize::hex::ToHex;
 use web3::types::{Log as Web3Log};
 
+pub trait LogLike {
+    fn event_log(&self) -> &Log;
+
+    fn event_address(&self) -> &H160 {
+        &self.event_log().address
+    }
+
+    fn event_topics(&self) -> &Vec<H256> {
+        &self.event_log().topics
+    }
+
+    fn raw_event_data(&self) -> &str {
+        &self.event_log().data.as_str()
+    }
+
+    fn block_hash(&self) -> Option<&H256> {
+        self.event_log().block_hash.as_ref()
+    }
+
+    fn block_hash_unchecked(&self) -> &H256 {
+        self.event_log().block_hash.as_ref().unwrap()
+    }
+
+    fn block_number(&self) -> Option<&U256> {
+        self.event_log().block_number.as_ref()
+    }
+
+    fn block_number_unchecked(&self) -> &U256 {
+        self.event_log().block_number.as_ref().unwrap()
+    }
+
+    fn transaction_hash(&self) -> Option<&H256> {
+        self.event_log().transaction_hash.as_ref()
+    }
+
+    fn transaction_hash_unchecked(&self) -> &H256 {
+        self.event_log().transaction_hash.as_ref().unwrap()
+    }
+
+    fn transaction_index(&self) -> Option<&U256> {
+        self.event_log().transaction_index.as_ref()
+    }
+
+    fn transaction_index_unchecked(&self) -> &U256 {
+        self.event_log().transaction_index.as_ref().unwrap()
+    }
+
+    fn log_index(&self) -> Option<&U256> {
+        self.event_log().log_index.as_ref()
+    }
+
+    fn log_index_unchecked(&self) -> &U256 {
+        self.event_log().log_index.as_ref().unwrap()
+    }
+
+    fn transaction_log_index(&self) -> Option<&U256> {
+        self.event_log().transaction_log_index.as_ref()
+    }
+
+    fn transaction_log_index_unchecked(&self) -> &U256 {
+        self.event_log().transaction_log_index.as_ref().unwrap()
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Log {
@@ -34,3 +98,4 @@ impl From<Web3Log> for Log {
         }
     }
 }
+
