@@ -4,6 +4,8 @@ use types::{H160, H256, U256};
 pub enum CallType {
     #[serde(rename = "call")]
     Call,
+    #[serde(rename = "delegatecall")]
+    DelegateCall,
     #[serde(rename = "staticcall")]
     StaticCall
 }
