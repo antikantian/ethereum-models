@@ -14,7 +14,7 @@ pub struct ParityTrace {
     pub action: Action,
     pub block_hash: H256,
     pub block_number: u64,
-    pub result: ActionResult,
+    pub result: Option<ActionResult>,
     pub subtraces: u8,
     pub trace_address: Vec<u8>,
     pub transaction_hash: H256,
