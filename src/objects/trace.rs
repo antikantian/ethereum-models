@@ -2,6 +2,7 @@ use types::{H160, H256, U256};
 
 #[derive(Serialize, Deserialize)]
 pub enum CallType {
+    #[serde(rename = "call")]
     Call
 }
 
