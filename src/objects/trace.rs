@@ -3,7 +3,9 @@ use types::{H160, H256, U256};
 #[derive(Serialize, Deserialize)]
 pub enum CallType {
     #[serde(rename = "call")]
-    Call
+    Call,
+    #[serde(rename = "staticcall")]
+    StaticCall
 }
 
 #[derive(Serialize, Deserialize)]
