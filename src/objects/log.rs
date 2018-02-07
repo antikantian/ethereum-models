@@ -85,15 +85,15 @@ pub struct Log {
 impl From<Web3Log> for Log {
     fn from(log: Web3Log) -> Self {
         Log {
-            address: H160::from(log.address.0),
-            topics: log.topics.into_iter().map(|h| H256::from(h.0)).collect(),
+            address: log.address,
+            topics: log.topics,
             data: String::from("0x") + &log.data.0.to_hex(),
-            block_hash: log.block_hash.map(|h| H256::from(h.0)),
-            block_number: log.block_number.map(|idx| U256::from(idx.0)),
-            transaction_hash: log.transaction_hash.map(|h| H256::from(h.0)),
-            transaction_index: log.transaction_index.map(|idx| U256::from(idx.0)),
-            log_index: log.log_index.map(|idx| U256::from(idx.0)),
-            transaction_log_index: log.transaction_log_index.map(|idx| U256::from(idx.0)),
+            block_hash: log.block_hash,
+            block_number: log.block_number,
+            transaction_hash: log.transaction_hash,
+            transaction_index: log.transaction_index,
+            log_index: log.log_index,
+            transaction_log_index: log.transaction_log_index,
             log_type: log.log_type
         }
     }

@@ -74,16 +74,16 @@ pub struct Transaction {
 impl From<Web3Transaction> for Transaction {
     fn from(tx: Web3Transaction) -> Self {
         Transaction {
-            hash: H256::from(tx.hash.0),
-            nonce: U256::from(tx.nonce.0),
-            block_hash: tx.block_hash.map(|h| H256::from(h.0)),
-            block_number: tx.block_number.map(|bn| U256::from(bn.0)),
+            hash: tx.hash,
+            nonce: tx.nonce,
+            block_hash: tx.block_hash,
+            block_number: tx.block_number,
             transaction_index: tx.transaction_index.map(|i| i.low_u64()),
-            from: H160::from(tx.from.0),
-            to: tx.to.map(|h| H160::from(h.0)),
-            value: U256::from(tx.value.0),
-            gas_price: U256::from(tx.gas_price.0),
-            gas: U256::from(tx.gas.0),
+            from: tx.from,
+            to: tx.to,
+            value: tx.value,
+            gas_price: tx.gas_price,
+            gas: tx.gas,
             input: String::from("0x") + &tx.input.0.to_hex()
         }
     }
@@ -117,13 +117,13 @@ pub struct TransactionReceipt {
 impl From<Web3TransactionReceipt> for TransactionReceipt {
     fn from(tr: Web3TransactionReceipt) -> Self {
         TransactionReceipt {
-            transaction_hash: H256::from(tr.transaction_hash.0),
+            transaction_hash: tr.transaction_hash,
             transaction_index: tr.transaction_index.low_u64(),
-            block_number: U256::from(tr.block_number.0),
-            block_hash: H256::from(tr.block_hash.0),
-            cumulative_gas_used: U256::from(tr.cumulative_gas_used.0),
-            gas_used: U256::from(tr.gas_used.0),
-            contract_address: tr.contract_address.map(|ca| H160::from(ca.0)),
+            block_number: tr.block_number,
+            block_hash: tr.block_hash,
+            cumulative_gas_used: tr.cumulative_gas_used,
+            gas_used: tr.gas_used,
+            contract_address: tr.contract_address,
             logs: tr.logs.into_iter().map(|web3_log| Log::from(web3_log)).collect()
         }
     }

@@ -28,22 +28,22 @@ pub struct Block {
 impl From<Web3Block<Web3Transaction>> for Block {
     fn from(block: Web3Block<Web3Transaction>) -> Self {
         Block {
-            hash: block.hash.map(|h| H256::from(h.0)),
-            parent_hash: H256::from(block.parent_hash.0),
-            uncles_hash: H256::from(block.uncles_hash.0),
-            author: H160::from(block.author.0),
-            state_root: H256::from(block.state_root.0),
-            transactions_root: H256::from(block.transactions_root.0),
-            receipts_root: H256::from(block.receipts_root.0),
+            hash: block.hash,
+            parent_hash: block.parent_hash,
+            uncles_hash: block.uncles_hash,
+            author: block.author,
+            state_root: block.state_root,
+            transactions_root: block.transactions_root,
+            receipts_root: block.receipts_root,
             number: block.number.map(|num| num.low_u64()),
-            gas_used: U256::from(block.gas_used.0),
-            gas_limit: U256::from(block.gas_limit.0),
+            gas_used: block.gas_used,
+            gas_limit: block.gas_limit,
             extra_data: String::from("0x") + &block.extra_data.0.to_hex(),
-            timestamp: U256::from(block.timestamp.0),
-            difficulty: U256::from(block.difficulty.0),
-            total_difficulty: U256::from(block.total_difficulty.0),
+            timestamp: block.timestamp,
+            difficulty: block.difficulty,
+            total_difficulty: block.total_difficulty,
             transactions: block.transactions.into_iter().map(|tx| Transaction::from(tx)).collect(),
-            size: block.size.map(|s| U256::from(s.0))
+            size: block.size
         }
     }
 }
