@@ -1,6 +1,6 @@
 use types::{H160, H256, U256};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum CallType {
     #[serde(rename = "call")]
     Call,
@@ -10,7 +10,7 @@ pub enum CallType {
     StaticCall
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all="camelCase")]
 pub struct ParityTrace {
     pub action: Action,
@@ -25,7 +25,7 @@ pub struct ParityTrace {
     pub action_type: CallType
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all="camelCase")]
 pub struct Action {
     pub call_type: CallType,
@@ -36,7 +36,7 @@ pub struct Action {
     pub value: U256
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all="camelCase")]
 pub struct ActionResult {
     pub gas_used: U256,
