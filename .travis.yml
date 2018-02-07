@@ -3,9 +3,12 @@ cache: cargo
 sudo: true
 
 rust:
-  - stable
-  - beta
   - nightly
 
 script:
   - cargo build --verbose
+
+env:
+  global:
+    - RUSTFLAGS="-C link-dead-code"
+    - TRAVIS_RUST_VERSION="1.25.0
