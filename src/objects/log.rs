@@ -1,5 +1,8 @@
+use std::hash::{Hash, Hasher};
+
 use ethereum_types::{H160, H256, U256};
 use rustc_serialize::hex::ToHex;
+use twox_hash::XxHash;
 use web3::types::{Log as Web3Log};
 
 pub trait LogLike {
@@ -66,7 +69,7 @@ pub trait LogLike {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Hash, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Log {
     pub address: H160,
@@ -80,6 +83,15 @@ pub struct Log {
     pub transaction_log_index: Option<U256>,
     #[serde(rename="type")]
     pub log_type: String
+}
+
+impl Log {
+    pub fn to_hash(&self) -> u64 {
+        let mut hasher = XxHash::default();
+        self.hash(&mut hasher);
+        hasher.finish()
+
+    }
 }
 
 impl From<Web3Log> for Log {
