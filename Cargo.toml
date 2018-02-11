@@ -6,6 +6,7 @@ authors = ["Etherswap.io <admin@etherswap.io>"]
 [dependencies]
 ethereum-types = { version = "0.2", features = ["use_asm"]}
 fixed-hash = "0.1.2"
+lazy_static = "1.0"
 rustc-serialize = "0.3"
 serde = "1.0.23"
 serde_derive = "1.0.23"
