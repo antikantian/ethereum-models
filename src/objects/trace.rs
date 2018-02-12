@@ -37,6 +37,16 @@ impl ParityTrace {
         hasher.finish()
     }
 
+    pub fn hash_action(&self) -> u64 {
+        let mut hasher = XxHash::default();
+        let hash_string = format!(
+            "{:?}{}{:?}{:?}",
+            &self.transaction_hash, &self.subtraces, &self.trace_address, &self.action
+        );
+        hash_string.hash(&mut hasher);
+        hasher.finish()
+    }
+
     pub fn hash_action_input(&self) -> u64 {
         let mut hasher = XxHash::default();
         let hash_string = format!(
