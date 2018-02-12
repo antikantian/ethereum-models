@@ -1,5 +1,8 @@
+use std::hash::{Hash, Hasher};
+
 use ethereum_types::{H160, H256, U256};
 use rustc_serialize::hex::ToHex;
+use twox_hash::XxHash;
 use web3::types::{
     Transaction as Web3Transaction,
     TransactionReceipt as Web3TransactionReceipt
@@ -55,7 +58,7 @@ pub trait TransactionLike {
     }
 }
 
-#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[derive(Hash, Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Transaction {
     pub hash: H256,
@@ -69,6 +72,21 @@ pub struct Transaction {
     pub gas_price: U256,
     pub gas: U256,
     pub input: String,
+}
+
+impl Transaction {
+    pub fn to_hash(&self) -> u64 {
+        let mut hasher = XxHash::default();
+        self.hash(&mut hasher);
+        hasher.finish()
+    }
+
+    pub fn hash_input(&self) -> u64 {
+        let mut hasher = XxHash::default();
+        let hash_string = format!("{:?}{:?}{}", &self.hash, &self.nonce, &self.input);
+        hash_string.hash(&mut hasher);
+        hasher.finish()
+    }
 }
 
 impl From<Web3Transaction> for Transaction {

@@ -94,7 +94,9 @@ impl Log {
 
     pub fn hash_data(&self) -> u64 {
         let mut hasher = XxHash::default();
-        let hash_string = format!("{:?}{:?}{}", &self.address, &self.transaction_hash, &self.data);
+        let hash_string = format!(
+            "{:?}{:?}{}", &self.address, &self.transaction_hash, &self.data
+        );
         hash_string.hash(&mut hasher);
         hasher.finish()
     }
