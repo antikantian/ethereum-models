@@ -1,5 +1,7 @@
+extern crate bigdecimal;
 extern crate ethereum_types;
 extern crate fixed_hash;
+extern crate num;
 extern crate rustc_serialize;
 extern crate twox_hash;
 extern crate web3;
