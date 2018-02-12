@@ -1,9 +1,10 @@
 use std::hash::{Hash, Hasher};
 
-use ethereum_types::{H160, H256, U256};
 use rustc_serialize::hex::ToHex;
 use twox_hash::XxHash;
 use web3::types::{Log as Web3Log};
+
+use types::{H160, H256, U256};
 
 pub trait LogLike {
     fn event_log(&self) -> &Log;
