@@ -90,7 +90,12 @@ impl Log {
         let mut hasher = XxHash::default();
         self.hash(&mut hasher);
         hasher.finish()
+    }
 
+    pub fn hash_data(&self) -> u64 {
+        let mut hasher = XxHash::default();
+        self.data.hash(&mut hasher);
+        hasher.finish()
     }
 }
 
