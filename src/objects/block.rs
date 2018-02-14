@@ -2,7 +2,7 @@ use ethereum_types::{H160, H256, U256};
 use rustc_serialize::hex::ToHex;
 use web3::types::{Block as Web3Block, Transaction as Web3Transaction};
 
-use super::Transaction;
+use super::{AddressType, Transaction};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -10,7 +10,7 @@ pub struct Block {
     pub hash: Option<H256>,
     pub parent_hash: H256,
     pub uncles_hash: H256,
-    pub author: H160,
+    pub author: AddressType,
     pub state_root: H256,
     pub transactions_root: H256,
     pub receipts_root: H256,
@@ -31,7 +31,7 @@ impl From<Web3Block<Web3Transaction>> for Block {
             hash: block.hash,
             parent_hash: block.parent_hash,
             uncles_hash: block.uncles_hash,
-            author: block.author,
+            author: AddressType::Uncategorized(block.author),
             state_root: block.state_root,
             transactions_root: block.transactions_root,
             receipts_root: block.receipts_root,

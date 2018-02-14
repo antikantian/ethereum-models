@@ -5,11 +5,12 @@ use twox_hash::XxHash;
 use web3::types::{Log as Web3Log};
 
 use types::{H160, H256, U256};
+use super::AddressType;
 
 pub trait LogLike {
     fn event_log(&self) -> &Log;
 
-    fn event_address(&self) -> &H160 {
+    fn event_address(&self) -> &AddressType {
         &self.event_log().address
     }
 
@@ -70,10 +71,10 @@ pub trait LogLike {
     }
 }
 
-#[derive(Debug, Hash, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Hash, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Log {
-    pub address: H160,
+    pub address: AddressType,
     pub topics: Vec<H256>,
     pub data: String,
     pub block_hash: Option<H256>,
@@ -106,7 +107,7 @@ impl Log {
 impl From<Web3Log> for Log {
     fn from(log: Web3Log) -> Self {
         Log {
-            address: log.address,
+            address: AddressType::Contract(log.address),
             topics: log.topics,
             data: String::from("0x") + &log.data.0.to_hex(),
             block_hash: log.block_hash,

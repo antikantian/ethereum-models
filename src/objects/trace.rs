@@ -4,6 +4,7 @@ use twox_hash::XxHash;
 use web3::types::{Log as Web3Log};
 
 use types::{H160, H256, U256};
+use super::AddressType;
 
 #[derive(Hash, Debug, Clone, Serialize, Deserialize)]
 pub enum CallType {
@@ -62,10 +63,10 @@ impl ParityTrace {
 #[serde(rename_all="camelCase")]
 pub struct Action {
     pub call_type: CallType,
-    pub from: H160,
+    pub from: AddressType,
     pub gas: U256,
     pub input: String,
-    pub to: H160,
+    pub to: AddressType,
     pub value: U256
 }
 

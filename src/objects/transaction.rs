@@ -58,7 +58,7 @@ pub trait TransactionLike {
     }
 }
 
-#[derive(Hash, Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[derive(Hash, Debug, Default, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Transaction {
     pub hash: H256,
@@ -119,7 +119,7 @@ pub trait ReceiptLike {
     }
 }
 
-#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, Default, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TransactionReceipt {
     pub transaction_hash: H256,
