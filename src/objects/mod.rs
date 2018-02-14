@@ -16,14 +16,16 @@ pub use self::transaction::{
 
 pub enum AddressType {
     Address(::types::H160),
-    Contract(::types::H160)
+    Contract(::types::H160),
+    Uncategorized(::types::H160)
 }
 
 impl AddressType {
     pub fn to_string_clean(&self) -> String {
         match *self {
             AddressType::Address(hash) => format!("{:?}", &hash),
-            AddressType::Contract(hash) => format!("{:?}", &hash)
+            AddressType::Contract(hash) => format!("{:?}", &hash),
+            AddressType::Uncategorized(hash) => format!("{:?}", &hash),
         }
     }
 
