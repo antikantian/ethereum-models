@@ -28,7 +28,7 @@ pub struct ParityTrace {
     pub transaction_hash: H256,
     pub transaction_position: u64,
     #[serde(rename = "type")]
-    pub action_type: CallType
+    pub action_type: Option<CallType>
 }
 
 impl ParityTrace {
