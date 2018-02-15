@@ -4,6 +4,7 @@ use web3::types::{Block as Web3Block, Transaction as Web3Transaction};
 
 use super::Transaction;
 
+/// An Ethereum block.
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Block {

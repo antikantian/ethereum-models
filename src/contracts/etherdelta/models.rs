@@ -8,35 +8,65 @@ type Token = H160;
 type User = H160;
 type Sender = H160;
 
+/// A transaction sent directly to the EtherDelta smart contract.
 pub struct EtherDeltaTransaction {
+    /// The actual transaction.
     pub tx: Transaction,
+    /// The transaction receipt.
     pub receipt: TransactionReceipt,
+    /// The decoded Action specified by the transaction's input.
     pub action: EtherDeltaAction,
+    /// The decoded logs/events (if any) that were generated after this transaction was executed
+    /// in a block.  Note that this will be `None` if the transaction failed.
     pub event: Option<EtherDeltaEvent>
 }
 
 impl EtherDeltaTransaction {
+    /// Was this transactions successful?  If not, the transaction's event will be `None`
     pub fn is_success(&self) -> bool { self.event.is_some() }
 }
 
+/// Any contract transaction that, during the course of execution, interacts with the
+/// EtherDelta smart contract, but was NOT sent directly to the contract address.
+/// That is, another contract is being used as a proxy to call the EtherDelta
+/// contract's methods.
 pub struct EtherDeltaProxyTransaction {
+    /// The actual transaction.
     pub tx: Transaction,
+    /// The transaction receipt.
     pub receipt: TransactionReceipt,
+    /// The call chain produced by the transaction's trace.  The action is `None` in
+    /// the case that the proxy contract calls methods outside of the EtherDelta contract.
     pub actions: Vec<(ParityTrace, Option<EtherDeltaAction>)>,
+    /// Any EtherDelta event generated after this transaction was executed.  This is not
+    /// comprehensive, as a proxy contract might generate events external to EtherDelta.
     pub events: Vec<EtherDeltaEvent>
 }
 
+/// The action specified in a transaction's input.  This will either be a call to a constant
+/// method, such as a balance check, or a call with change's to the EVM storage, like a trade.
 #[derive(Debug, Serialize, Deserialize)]
 pub enum EtherDeltaAction {
+    /// A cancellation of an on-chain order.  Rarely seen.
     CancelOrder(OrderData),
+    /// A deposit of ether to the smart contract.
     Deposit(Amount),
+    /// A deposit of a compatible token to the smart contract.
     DepositToken(Token, Amount),
+    /// A trade executed on-chain by an order's taker.
     Trade(OrderData, User, Amount),
+    /// A withdrawal of ether from the smart contract.
     Withdraw(Amount),
+    /// A withdrawal of any compatible token from the smart contract.
     WithdrawToken(Token, Amount),
+    /// Constant call returning the amount of an order that has already been filled.
     AmountFilled(OrderData, User),
+    /// Constant call returning the amount of an order that is available (has yet to be filled).
     AvailableVolume(OrderData, User),
+    /// Constant call checking whether or not a trade will succeed upon on-chain execution.
     TestTrade(OrderData, User, Amount, Sender),
+    /// Balance of any address with funds (either in ether or a compatible token) in the contract.
+    /// If checking an address' ether balance, the token will be `0x0...0`.
     BalanceOf(Token, User)
 }
 
@@ -59,7 +89,8 @@ impl NamedFunction for EtherDeltaAction {
                 "EtherDelta.withdraw".to_string()
             ),
             EtherDeltaAction::WithdrawToken(_, _) => ContractFunction::Mutable(
-                "EtherDelta.withdrawToken".to_string()),
+                "EtherDelta.withdrawToken".to_string()
+            ),
             EtherDeltaAction::AmountFilled(_, _) => ContractFunction::Immutable(
                 "EtherDelta.amountFilled".to_string()
             ),
@@ -85,37 +116,72 @@ pub enum EtherDeltaEvent {
     Withdraw(Token, User, Amount, Balance),
 }
 
+/// The order data decoded either from a transaction's input, or from the transaction's log data.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct OrderData {
+    /// The address of the token being received by the order's maker, given by the taker.
+    /// Ether is specified by `0x0...0`.
     pub token_get: H160,
+    /// The amount of ether/token received by the maker.
     pub amount_get: U256,
+    /// The address of the token being received by the order's taker, given by the maker.
     pub token_give: H160,
+    /// The amount of ether/token received by the taker.
     pub amount_give: U256,
+    /// The block at which this order was set to expire.
     pub expires: U256,
+    /// The order's nonce to disambiguate multiple identical orders.
     pub nonce: U256,
+    /// `v` component of the signature data used in validation.  Used when the `trade`
+    /// function calls `ecrecover`.
     pub v: U256,
+    /// `r` component of the signature data used in validation.  Used when the `trade`
+    /// function calls `ecrecover`.
     pub r: String,
+    /// `s` component of the signature data used in validation.  Used when the `trade`
+    /// function calls `ecrecover`.
     pub s: String,
 }
 
+/// The data decoded from successful on-chain calls to `order`.  Rarely seen.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct OrderLog {
+    /// Same as in `OrderData`.
     pub token_get: H160,
+    /// Same as in `OrderData`.
     pub amount_get: U256,
+    /// Same as in `OrderData`.
     pub token_give: H160,
+    /// Same as in `OrderData`.
     pub amount_give: U256,
+    /// Same as in `OrderData`.
     pub expires: U256,
+    /// Same as in `OrderData`.
     pub nonce: U256,
+    /// The maker who placed the order either on- or off-chain.
     pub user: H160,
 }
 
+/// The data decoded from successful calls to `trade`.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TradeLog {
+    /// Same as in `OrderData`.
     pub token_get: H160,
+    /// The amount received by the maker in this specific trade.  Could be less than the
+    /// order amount in the case of partial fills.
     pub amount_get: U256,
+    /// Same as in `OrderData`.
     pub token_give: H160,
+    /// The amount received by the taker in this specific trade.  Could be less than the
+    /// order amount in the case of partial fills.
     pub amount_give: U256,
+    /// The order's maker.  `Get` as specified by the EtherDelta smart contract.  Renamed
+    /// for clarity and normalization across all Etherswap exchange models.
     pub maker: H160,
+    /// The order's taker.  `Give` as specified by the EtherDelta smart contract.  Renamed
+    /// for clarity and normalization across all Etherswap exchange models.
     pub taker: H160,
+    /// Not native to EtherDelta contract events.  This price is calculated during processing,
+    /// since the calculation relies on knowledge of a token contract's `decimals` field.
     pub price: f64
 }

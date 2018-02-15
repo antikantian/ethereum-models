@@ -6,6 +6,8 @@ use web3::types::{Log as Web3Log};
 
 use types::{H160, H256, U256};
 
+/// A trait for all log-data-containing structures, but that are themselves
+/// not (only) logs.  Used in several of Etherswap's private repositories.
 pub trait LogLike {
     fn event_log(&self) -> &Log;
 
@@ -70,6 +72,7 @@ pub trait LogLike {
     }
 }
 
+/// A log produced after a transaction's execution.
 #[derive(Debug, Hash, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Log {

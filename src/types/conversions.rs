@@ -4,6 +4,7 @@ use bigdecimal::{BigDecimal, ParseBigDecimalError};
 use ethereum_types::U256;
 use num::Num;
 
+/// Used to convert between canonical Ethereum units of measure.
 pub enum EthereumUnit {
     Wei(BigDecimal),
     Kwei(BigDecimal),

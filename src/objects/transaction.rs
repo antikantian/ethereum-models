@@ -10,6 +10,8 @@ use web3::types::{
 
 use objects::Log;
 
+/// A trait for all transaction-data-containing structures, but that are themselves
+/// not (only) transactions.  Used in several of Etherswap's private repositories.
 pub trait TransactionLike {
     fn get_tx(&self) -> &Transaction;
 
@@ -58,6 +60,7 @@ pub trait TransactionLike {
     }
 }
 
+/// An Ethereum transaction.
 #[derive(Hash, Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Transaction {
@@ -119,6 +122,7 @@ pub trait ReceiptLike {
     }
 }
 
+/// A transaction's receipt.
 #[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TransactionReceipt {

@@ -10,6 +10,7 @@ use super::constants::*;
 use error::{Error, ErrorKind};
 use utils;
 
+/// Decoder for all actions, events, and traces to/from the EtherDelta smart contract.
 pub struct EtherDeltaDecoder;
 
 impl EtherDeltaDecoder {
