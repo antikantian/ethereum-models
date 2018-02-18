@@ -1,8 +1,19 @@
+use std::str;
+use std::mem::transmute;
+
 use ethereum_types::{H160, H256, U256};
 use rustc_serialize::hex::ToHex;
+use serde::ser::{Serialize, Serializer};
 use web3::types::{Block as Web3Block, Transaction as Web3Transaction};
 
 use super::Transaction;
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+#[serde(untagged)]
+pub enum BlockNumber<'a> {
+    Name(&'a str),
+    Number(u64)
+}
 
 /// An Ethereum block.
 #[derive(Serialize, Deserialize, Debug, Clone)]
