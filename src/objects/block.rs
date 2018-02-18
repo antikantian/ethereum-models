@@ -1,12 +1,11 @@
-use std::str;
-use std::mem::transmute;
+use std::u64;
 
 use ethereum_types::{H160, H256, U256};
 use rustc_serialize::hex::ToHex;
-use serde::ser::{Serialize, Serializer};
 use web3::types::{Block as Web3Block, Transaction as Web3Transaction};
 
 use super::Transaction;
+use u64_from_str;
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(untagged)]
@@ -21,11 +20,12 @@ pub enum BlockNumber<'a> {
 pub struct Block {
     pub hash: Option<H256>,
     pub parent_hash: H256,
-    pub uncles_hash: H256,
+    pub sha3_uncles: H256,
     pub author: H160,
     pub state_root: H256,
     pub transactions_root: H256,
     pub receipts_root: H256,
+    #[serde(deserialize_with = "u64_from_str")]
     pub number: Option<u64>,
     pub gas_used: U256,
     pub gas_limit: U256,
@@ -42,7 +42,7 @@ impl From<Web3Block<Web3Transaction>> for Block {
         Block {
             hash: block.hash,
             parent_hash: block.parent_hash,
-            uncles_hash: block.uncles_hash,
+            sha3_uncles: block.uncles_hash,
             author: block.author,
             state_root: block.state_root,
             transactions_root: block.transactions_root,
@@ -58,4 +58,32 @@ impl From<Web3Block<Web3Transaction>> for Block {
             size: block.size
         }
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use serde_json;
+    use super::Block;
+
+    #[test]
+    fn block_deserializes_no_tx() {
+        let block_json = include_str!("../../test_data/block_no_tx.json");
+        serde_json::from_str::<Block>(&block_json).unwrap();
+    }
+
+    #[test]
+    fn block_number_deserializes() {
+        let block_json = include_str!("../../test_data/block_no_tx.json");
+        let block = serde_json::from_str::<Block>(&block_json).unwrap();
+        let actual_block_number = 5110738;
+        let deserialized_block_number = block.number.unwrap();
+        assert_eq!(deserialized_block_number, actual_block_number);
+    }
+
+    #[test]
+    fn block_deserializes_with_tx() {
+        let block_json = include_str!("../../test_data/block_with_tx.json");
+        serde_json::from_str::<Block>(&block_json).unwrap();
+    }
+
 }
