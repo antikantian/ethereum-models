@@ -1,14 +1,15 @@
 use std::str::{self, FromStr};
 
-use ethereum_models::objects::{Log, ParityTrace, Transaction};
-use ethereum_models::types::{H160, H256, U256};
 use fixed_hash::clean_0x;
 use serde_json;
 
+use contracts::normalize_data;
+use error::{Error, ErrorKind};
+use objects::{Log, ParityTrace, Transaction};
+use types::{H160, H256, U256};
+
 use super::models::*;
 use super::constants::*;
-use error::{Error, ErrorKind};
-use utils;
 
 /// Decoder for all actions, events, and traces to/from the EtherDelta smart contract.
 pub struct EtherDeltaDecoder;
@@ -188,7 +189,7 @@ impl EtherDeltaDecoder {
     }
 
     fn decode_cancel_order_id(input: &str) -> Result<EtherDeltaAction, Error> {
-        match utils::normalize_data(&input, 9) {
+        match normalize_data(&input, 9) {
             Ok(fields) => {
                 Ok(EtherDeltaAction::CancelOrder(
                     OrderData {
@@ -213,7 +214,7 @@ impl EtherDeltaDecoder {
     }
 
     fn decode_withdraw_id(input: &str) -> Result<EtherDeltaAction, Error> {
-        match utils::normalize_data(&input, 1) {
+        match normalize_data(&input, 1) {
             Ok(fields) => Ok(EtherDeltaAction::Withdraw(U256::from_str(&fields[0]).unwrap())),
             Err(e) => Err(e)
         }
@@ -224,7 +225,7 @@ impl EtherDeltaDecoder {
     }
 
     fn decode_deposit_token_id(input: &str) -> Result<EtherDeltaAction, Error> {
-        match utils::normalize_data(&input, 2) {
+        match normalize_data(&input, 2) {
             Ok(fields) => {
                 Ok(EtherDeltaAction::DepositToken(
                     H160::from_str(&fields[0][24..]).unwrap(),
@@ -240,7 +241,7 @@ impl EtherDeltaDecoder {
     }
 
     fn decode_withdraw_token_id(input: &str) -> Result<EtherDeltaAction, Error> {
-        match utils::normalize_data(&input, 2) {
+        match normalize_data(&input, 2) {
             Ok(fields) => {
                 Ok(EtherDeltaAction::WithdrawToken(
                     H160::from_str(&fields[0][24..]).unwrap(),
@@ -256,7 +257,7 @@ impl EtherDeltaDecoder {
     }
 
     fn decode_trade_id(input: &str) -> Result<EtherDeltaAction, Error> {
-        match utils::normalize_data(&input, 11) {
+        match normalize_data(&input, 11) {
             Ok(fields) => {
                 Ok(EtherDeltaAction::Trade(
                     OrderData {
@@ -279,7 +280,7 @@ impl EtherDeltaDecoder {
     }
 
     fn decode_amount_filled(trace: &ParityTrace) -> Result<EtherDeltaAction, Error> {
-        match utils::normalize_data(&trace.action.input, 10) {
+        match normalize_data(&trace.action.input, 10) {
             Ok(fields) => {
                 Ok(EtherDeltaAction::AmountFilled(
                     OrderData {
@@ -311,7 +312,7 @@ impl EtherDeltaDecoder {
     }
 
     fn decode_test_trade(trace: &ParityTrace) -> Result<EtherDeltaAction, Error> {
-        match utils::normalize_data(&trace.action.input, 12) {
+        match normalize_data(&trace.action.input, 12) {
             Ok(fields) => {
                 Ok(EtherDeltaAction::TestTrade(
                     OrderData {
@@ -335,7 +336,7 @@ impl EtherDeltaDecoder {
     }
 
     fn decode_balance_of(trace: &ParityTrace) -> Result<EtherDeltaAction, Error> {
-        match utils::normalize_data(&trace.action.input, 2) {
+        match normalize_data(&trace.action.input, 2) {
             Ok(fields) => {
                 Ok(EtherDeltaAction::BalanceOf(
                     H160::from_str(&fields[0][24..]).unwrap(),

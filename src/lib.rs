@@ -7,6 +7,9 @@ extern crate twox_hash;
 extern crate web3;
 
 #[macro_use]
+extern crate error_chain;
+
+#[macro_use]
 extern crate lazy_static;
 
 #[macro_use]
@@ -15,8 +18,11 @@ extern crate serde;
 extern crate serde_json;
 
 pub mod contracts;
+pub mod error;
 pub mod objects;
 pub mod types;
+
+pub use error::{Error, ErrorKind};
 
 use serde::de::{self, Deserialize, Deserializer};
 

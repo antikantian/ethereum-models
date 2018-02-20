@@ -1,4 +1,5 @@
 pub mod constants;
+pub mod decoder;
 mod models;
 
 pub use self::models::{
