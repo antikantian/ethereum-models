@@ -1,6 +1,7 @@
 pub mod etherdelta;
 
 use std::str;
+use std::string::ToString;
 
 use fixed_hash::clean_0x;
 
@@ -13,6 +14,15 @@ pub trait NamedFunction {
 pub enum ContractFunction {
     Immutable(String),
     Mutable(String)
+}
+
+impl ToString for ContractFunction {
+    fn to_string(&self) -> String {
+        match *self {
+            ContractFunction::Immutable(ref s) => s.to_string(),
+            ContractFunction::Mutable(ref s) => s.to_string()
+        }
+    }
 }
 
 pub fn clean_method_id(data: &str, num_params: usize) -> &str {
