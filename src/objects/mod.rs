@@ -16,6 +16,7 @@ pub use self::transaction::{
     ReceiptLike
 };
 
+#[derive(Serialize, Deserialize)]
 pub enum AddressType {
     Address(::types::H160),
     Contract(::types::H160),
