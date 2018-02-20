@@ -36,3 +36,32 @@ impl AddressType {
         String::from("0x") + &self.to_string_clean()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::str::FromStr;
+    use types::H160;
+    use super::AddressType;
+
+    #[test]
+    fn yields_0x_prefix() {
+        let a = AddressType::Address(
+            H160::from_str("a94f5374fce5edbc8e2a8697c15331677e6ebf0b").unwrap()
+        );
+
+        let a_0x = a.to_string_0x();
+
+        assert_eq!(a_0x, "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b");
+    }
+
+    #[test]
+    fn yields_no_0x_prefix() {
+        let a = AddressType::Address(
+            H160::from_str("a94f5374fce5edbc8e2a8697c15331677e6ebf0b").unwrap()
+        );
+
+        let a_no_0x = a.to_string_clean();
+
+        assert_eq!(a_no_0x, "a94f5374fce5edbc8e2a8697c15331677e6ebf0b");
+    }
+}
