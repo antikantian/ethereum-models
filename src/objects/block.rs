@@ -1,4 +1,5 @@
 use std::u64;
+use std::cmp::Ordering;
 
 use ethereum_types::{H160, H256, U256};
 use rustc_serialize::hex::ToHex;
@@ -37,6 +38,24 @@ pub struct Block {
     pub size: Option<U256>
 }
 
+impl PartialEq for Block {
+    fn eq(&self, other: &Self) -> bool {
+        self.number
+            .and_then(|bn_a| other.number.map(|bn_b| (bn_a, bn_b)))
+            .map(|(bn_a, bn_b)| bn_a == bn_b)
+            .unwrap_or(false)
+    }
+}
+
+
+impl PartialOrd for Block {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.number
+            .and_then(|ba| other.number.map(|bb| (ba, bb)))
+            .map(|(ba, bb)| ba.cmp(&bb))
+    }
+}
+
 impl From<Web3Block<Web3Transaction>> for Block {
     fn from(block: Web3Block<Web3Transaction>) -> Self {
         Block {
@@ -62,8 +81,10 @@ impl From<Web3Block<Web3Transaction>> for Block {
 
 #[cfg(test)]
 mod tests {
+    use std::str::FromStr;
     use serde_json;
     use super::Block;
+    use types::{H160, H256, U256};
 
     #[test]
     fn block_deserializes_no_tx() {
@@ -86,4 +107,129 @@ mod tests {
         serde_json::from_str::<Block>(&block_json).unwrap();
     }
 
+    #[test]
+    fn blocks_have_partial_eq() {
+        let some_h256_str = "32465f4e8fd8d0e3ab084396024e199344050ab33b993844ccb2229d648200d9";
+        let some_h256 = H256::from_str(some_h256_str).unwrap();
+
+        let some_h160_str = "dfc17b1d9263e729948016c43865a63d1462dae6";
+        let some_h160 = H160::from_str(some_h160_str).unwrap();
+
+        let some_u256 = U256::from(1000);
+
+        let block_5000000 = Block {
+            hash: Some(some_h256.clone()),
+            parent_hash: some_h256.clone(),
+            sha3_uncles: some_h256.clone(),
+            author: some_h160.clone(),
+            state_root: some_h256.clone(),
+            transactions_root: some_h256.clone(),
+            receipts_root: some_h256.clone(),
+            number: Some(5000000_u64),
+            gas_used: some_u256.clone(),
+            gas_limit: some_u256.clone(),
+            extra_data: "none".to_string(),
+            timestamp: some_u256.clone(),
+            difficulty: some_u256.clone(),
+            total_difficulty: some_u256.clone(),
+            transactions: Vec::new(),
+            size: None
+        };
+
+        let block_5000001 = Block {
+            hash: Some(some_h256.clone()),
+            parent_hash: some_h256.clone(),
+            sha3_uncles: some_h256.clone(),
+            author: some_h160.clone(),
+            state_root: some_h256.clone(),
+            transactions_root: some_h256.clone(),
+            receipts_root: some_h256.clone(),
+            number: Some(5000001_u64),
+            gas_used: some_u256.clone(),
+            gas_limit: some_u256.clone(),
+            extra_data: "none".to_string(),
+            timestamp: some_u256.clone(),
+            difficulty: some_u256.clone(),
+            total_difficulty: some_u256.clone(),
+            transactions: Vec::new(),
+            size: None
+        };
+
+        assert_eq!(block_5000000, block_5000000);
+        assert_ne!(block_5000001, block_5000000);
+    }
+
+    #[test]
+    fn blocks_have_partial_ord() {
+        let some_h256_str = "32465f4e8fd8d0e3ab084396024e199344050ab33b993844ccb2229d648200d9";
+        let some_h256 = H256::from_str(some_h256_str).unwrap();
+
+        let some_h160_str = "dfc17b1d9263e729948016c43865a63d1462dae6";
+        let some_h160 = H160::from_str(some_h160_str).unwrap();
+
+        let some_u256 = U256::from(1000);
+
+        let block_5000000 = Block {
+            hash: Some(some_h256.clone()),
+            parent_hash: some_h256.clone(),
+            sha3_uncles: some_h256.clone(),
+            author: some_h160.clone(),
+            state_root: some_h256.clone(),
+            transactions_root: some_h256.clone(),
+            receipts_root: some_h256.clone(),
+            number: Some(5000000_u64),
+            gas_used: some_u256.clone(),
+            gas_limit: some_u256.clone(),
+            extra_data: "none".to_string(),
+            timestamp: some_u256.clone(),
+            difficulty: some_u256.clone(),
+            total_difficulty: some_u256.clone(),
+            transactions: Vec::new(),
+            size: None
+        };
+
+        let block_5000001 = Block {
+            hash: Some(some_h256.clone()),
+            parent_hash: some_h256.clone(),
+            sha3_uncles: some_h256.clone(),
+            author: some_h160.clone(),
+            state_root: some_h256.clone(),
+            transactions_root: some_h256.clone(),
+            receipts_root: some_h256.clone(),
+            number: Some(5000001_u64),
+            gas_used: some_u256.clone(),
+            gas_limit: some_u256.clone(),
+            extra_data: "none".to_string(),
+            timestamp: some_u256.clone(),
+            difficulty: some_u256.clone(),
+            total_difficulty: some_u256.clone(),
+            transactions: Vec::new(),
+            size: None
+        };
+
+        let block_5000002 = Block {
+            hash: Some(some_h256.clone()),
+            parent_hash: some_h256.clone(),
+            sha3_uncles: some_h256.clone(),
+            author: some_h160.clone(),
+            state_root: some_h256.clone(),
+            transactions_root: some_h256.clone(),
+            receipts_root: some_h256.clone(),
+            number: Some(5000002_u64),
+            gas_used: some_u256.clone(),
+            gas_limit: some_u256.clone(),
+            extra_data: "none".to_string(),
+            timestamp: some_u256.clone(),
+            difficulty: some_u256.clone(),
+            total_difficulty: some_u256.clone(),
+            transactions: Vec::new(),
+            size: None
+        };
+
+        let mut blocks = vec![block_5000000, block_5000002, block_5000001];
+        blocks.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        let block_seq = blocks.iter().map(|b| b.number).collect::<Vec<Option<u64>>>();
+
+        assert_eq!(block_seq, vec![Some(5000000_u64), Some(5000001_u64), Some(5000002_u64)]);
+    }
 }
