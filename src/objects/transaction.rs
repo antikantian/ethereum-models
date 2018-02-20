@@ -129,6 +129,7 @@ pub trait ReceiptLike {
 #[serde(rename_all = "camelCase")]
 pub struct TransactionReceipt {
     pub transaction_hash: H256,
+    #[serde(deserialize_with = "u64_from_str")]
     pub transaction_index: u64,
     pub block_number: U256,
     pub block_hash: H256,
