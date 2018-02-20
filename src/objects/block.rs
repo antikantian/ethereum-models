@@ -6,7 +6,7 @@ use rustc_serialize::hex::ToHex;
 use web3::types::{Block as Web3Block, Transaction as Web3Transaction};
 
 use super::Transaction;
-use u64_from_str;
+use opt_u64_from_str;
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(untagged)]
@@ -26,7 +26,7 @@ pub struct Block {
     pub state_root: H256,
     pub transactions_root: H256,
     pub receipts_root: H256,
-    #[serde(deserialize_with = "u64_from_str")]
+    #[serde(deserialize_with = "opt_u64_from_str")]
     pub number: Option<u64>,
     pub gas_used: U256,
     pub gas_limit: U256,

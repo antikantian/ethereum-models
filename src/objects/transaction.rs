@@ -8,7 +8,7 @@ use web3::types::{
     TransactionReceipt as Web3TransactionReceipt
 };
 
-use u64_from_str;
+use {u64_from_str, opt_u64_from_str};
 use objects::Log;
 
 /// A trait for all transaction-data-containing structures, but that are themselves
@@ -69,7 +69,7 @@ pub struct Transaction {
     pub nonce: U256,
     pub block_hash: Option<H256>,
     pub block_number: Option<U256>,
-    #[serde(deserialize_with = "u64_from_str")]
+    #[serde(deserialize_with = "opt_u64_from_str")]
     pub transaction_index: Option<u64>,
     pub from: H160,
     pub to: Option<H160>,
