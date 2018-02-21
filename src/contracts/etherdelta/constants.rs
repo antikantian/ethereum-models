@@ -1,37 +1,30 @@
 use std::str::FromStr;
 
-use ::types::{H160, H256, U256};
-use serde_json;
+use types::{H160, H256, U256};
 
 lazy_static! {
     pub static ref MAKER_FEE: U256 = U256::from(0x0);
 
-    pub static ref TAKER_FEE: U256 = U256::from_str("aa87bee538000")
-        .expect("Static integer conversion should never fail");
+    pub static ref TAKER_FEE: U256 = U256::from_str("aa87bee538000").unwrap();
 
     pub static ref ETHERDELTA_ADDRESS: H160 = {
-        serde_json::from_str("8d12a197cb00d4747a1fe03395095ce2a5cc6819")
-        .expect("Deserialization of static should never fail")
+        H160::from_str("8d12a197cb00d4747a1fe03395095ce2a5cc6819").unwrap()
     };
 
     pub static ref ETHERDELTA_CANCEL_ORDER_TOPIC: H256 = {
-        serde_json::from_str("1e0b760c386003e9cb9bcf4fcf3997886042859d9b6ed6320e804597fcdb28b0")
-            .expect("Deserialization of static should never fail")
+        H256::from_str("1e0b760c386003e9cb9bcf4fcf3997886042859d9b6ed6320e804597fcdb28b0").unwrap()
     };
 
     pub static ref ETHERDELTA_TRADE_TOPIC: H256 = {
-        serde_json::from_str("6effdda786735d5033bfad5f53e5131abcced9e52be6c507b62d639685fbed6d")
-            .expect("Deserialization of static should never fail")
+        H256::from_str("6effdda786735d5033bfad5f53e5131abcced9e52be6c507b62d639685fbed6d").unwrap()
     };
 
     pub static ref ETHERDELTA_DEPOSIT_TOPIC: H256 = {
-        serde_json::from_str("dcbc1c05240f31ff3ad067ef1ee35ce4997762752e3a095284754544f4c709d7")
-            .expect("Deserialization of static should never fail")
+        H256::from_str("dcbc1c05240f31ff3ad067ef1ee35ce4997762752e3a095284754544f4c709d7").unwrap()
     };
 
     pub static ref ETHERDELTA_WITHDRAW_TOPIC: H256 = {
-        serde_json::from_str("f341246adaac6f497bc2a656f546ab9e182111d630394f0c57c710a59a2cb567")
-            .expect("Deserialization of static should never fail")
+        H256::from_str("f341246adaac6f497bc2a656f546ab9e182111d630394f0c57c710a59a2cb567").unwrap()
     };
 }
 
@@ -56,3 +49,19 @@ pub const ETHERDELTA_CANCEL_LOG: &'static str = "0x1e0b760c386003e9cb9bcf4fcf399
 pub const ETHERDELTA_DEPOSIT_LOG: &'static str = "0xdcbc1c05240f31ff3ad067ef1ee35ce4997762752e3a095284754544f4c709d7";
 pub const ETHERDELTA_TRADE_LOG: &'static str = "0x6effdda786735d5033bfad5f53e5131abcced9e52be6c507b62d639685fbed6d";
 pub const ETHERDELTA_WITHDRAW_LOG: &'static str = "0xf341246adaac6f497bc2a656f546ab9e182111d630394f0c57c710a59a2cb567";
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn statics_initialize() {
+        let maker = &MAKER_FEE;
+        let taker = &TAKER_FEE;
+        let address = &ETHERDELTA_ADDRESS;
+        let topic1 = &ETHERDELTA_CANCEL_ORDER_TOPIC;
+        let topic2 = &ETHERDELTA_TRADE_TOPIC;
+        let topic3 = &ETHERDELTA_DEPOSIT_TOPIC;
+        let topic4 = &ETHERDELTA_WITHDRAW_TOPIC;
+    }
+}
