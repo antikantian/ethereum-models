@@ -1,6 +1,6 @@
 [package]
 name = "ethereum-models"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Etherswap.io <admin@etherswap.io>"]
 
 [dependencies]

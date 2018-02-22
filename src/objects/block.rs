@@ -10,6 +10,13 @@ use opt_u64_from_str;
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 #[serde(untagged)]
+pub enum BlockTx {
+    Hash(H256),
+    Tx(Transaction)
+}
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+#[serde(untagged)]
 pub enum BlockNumber<'a> {
     Name(&'a str),
     Number(u64)
@@ -34,7 +41,7 @@ pub struct Block {
     pub timestamp: U256,
     pub difficulty: U256,
     pub total_difficulty: U256,
-    pub transactions: Vec<Transaction>,
+    pub transactions: Vec<BlockTx>,
     pub size: Option<U256>
 }
 
@@ -73,7 +80,34 @@ impl From<Web3Block<Web3Transaction>> for Block {
             timestamp: block.timestamp,
             difficulty: block.difficulty,
             total_difficulty: block.total_difficulty,
-            transactions: block.transactions.into_iter().map(|tx| Transaction::from(tx)).collect(),
+            transactions: block.transactions
+                .into_iter()
+                .map(|tx| BlockTx::Tx(Transaction::from(tx))).collect(),
+            size: block.size
+        }
+    }
+}
+
+impl From<Web3Block<H256>> for Block {
+    fn from(block: Web3Block<H256>) -> Self {
+        Block {
+            hash: block.hash,
+            parent_hash: block.parent_hash,
+            sha3_uncles: block.uncles_hash,
+            author: block.author,
+            state_root: block.state_root,
+            transactions_root: block.transactions_root,
+            receipts_root: block.receipts_root,
+            number: block.number.map(|num| num.low_u64()),
+            gas_used: block.gas_used,
+            gas_limit: block.gas_limit,
+            extra_data: String::from("0x") + &block.extra_data.0.to_hex(),
+            timestamp: block.timestamp,
+            difficulty: block.difficulty,
+            total_difficulty: block.total_difficulty,
+            transactions: block.transactions
+                .into_iter()
+                .map(|tx| BlockTx::Hash(tx)).collect(),
             size: block.size
         }
     }
@@ -85,6 +119,12 @@ mod tests {
     use serde_json;
     use super::Block;
     use types::{H160, H256, U256};
+
+    #[test]
+    fn block_deserializes_only_hashes() {
+        let block_json = include_str!("../../test_data/block_tx_hashes.json");
+        serde_json::from_str::<Block>(&block_json).unwrap();
+    }
 
     #[test]
     fn block_deserializes_no_tx() {
