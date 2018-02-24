@@ -5,7 +5,7 @@ mod transaction;
 
 pub mod trace;
 
-pub use self::block::{Block, BlockNumber};
+pub use self::block::{Block, BlockNumber, BlockTx};
 pub use self::call::TransactionCall;
 pub use self::log::{Log, LogLike};
 pub use self::trace::ParityTrace;
