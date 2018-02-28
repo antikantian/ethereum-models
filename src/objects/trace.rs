@@ -70,7 +70,7 @@ pub struct Action {
     pub input: String,
     #[serde(default)]
     pub init: String,
-    pub to: H160,
+    pub to: Option<H160>,
     pub value: U256
 }
 
