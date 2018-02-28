@@ -41,7 +41,7 @@ impl EtherDeltaDecoder {
             let method_id = &input[..10];
             match &*method_id {
                 CANCEL_ORDER_ID => EtherDeltaDecoder::decode_cancel_order_id(&input),
-                DEPOSIT_ID => Ok(EtherDeltaAction::Deposit(trace.action.value.clone())),
+                DEPOSIT_ID => Ok(EtherDeltaAction::Deposit(trace.action.value.unwrap().clone())),
                 DEPOSIT_TOKEN_ID => EtherDeltaDecoder::decode_deposit_token_id(&input),
                 TRADE_ID => EtherDeltaDecoder::decode_trade_id(&input),
                 WITHDRAW_ID => EtherDeltaDecoder::decode_withdraw_id(&input),

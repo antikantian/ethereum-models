@@ -14,7 +14,9 @@ pub enum CallType {
     #[serde(rename = "staticcall")]
     StaticCall,
     #[serde(rename = "create")]
-    Create
+    Create,
+    #[serde(rename = "suicide")]
+    Suicide
 }
 
 #[derive(Hash, Debug, Clone, Serialize, Deserialize)]
@@ -64,14 +66,16 @@ impl ParityTrace {
 #[serde(rename_all="camelCase")]
 pub struct Action {
     pub call_type: Option<CallType>,
-    pub from: H160,
-    pub gas: U256,
+    pub from: Option<H160>,
+    pub balance: Option<U256>,
+    pub refund_address: Option<H160>,
+    pub gas: Option<U256>,
     #[serde(default)]
     pub input: String,
     #[serde(default)]
     pub init: String,
     pub to: Option<H160>,
-    pub value: U256
+    pub value: Option<U256>
 }
 
 #[derive(Hash, Debug, Clone, Serialize, Deserialize)]
