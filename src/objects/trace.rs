@@ -77,8 +77,10 @@ pub struct Action {
 #[derive(Hash, Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all="camelCase")]
 pub struct ActionResult {
+    pub address: Option<H160>,
+    pub code: Option<String>,
     pub gas_used: U256,
-    pub output: String
+    pub output: Option<String>
 }
 
 #[cfg(test)]
