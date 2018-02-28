@@ -66,8 +66,10 @@ pub struct Action {
     pub call_type: Option<CallType>,
     pub from: H160,
     pub gas: U256,
-    pub input: Option<String>,
-    pub init: Option<String>,
+    #[serde(default)]
+    pub input: String,
+    #[serde(default)]
+    pub init: String,
     pub to: H160,
     pub value: U256
 }
