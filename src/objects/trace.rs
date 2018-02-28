@@ -63,7 +63,7 @@ impl ParityTrace {
 #[derive(Hash, Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all="camelCase")]
 pub struct Action {
-    pub call_type: CallType,
+    pub call_type: Option<CallType>,
     pub from: H160,
     pub gas: U256,
     pub input: String,
