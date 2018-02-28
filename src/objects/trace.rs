@@ -12,7 +12,9 @@ pub enum CallType {
     #[serde(rename = "delegatecall")]
     DelegateCall,
     #[serde(rename = "staticcall")]
-    StaticCall
+    StaticCall,
+    #[serde(rename = "create")]
+    Create
 }
 
 #[derive(Hash, Debug, Clone, Serialize, Deserialize)]
@@ -74,4 +76,16 @@ pub struct Action {
 pub struct ActionResult {
     pub gas_used: U256,
     pub output: String
+}
+
+#[cfg(test)]
+mod tests {
+    use serde_json;
+    use super::ParityTrace;
+
+    #[test]
+    fn decodes_traces() {
+        let traces = include_str!("../../test_data/parity_trace.json");
+        let decoded_traces = serde_json::from_str::<Vec<ParityTrace>>(&traces);
+    }
 }

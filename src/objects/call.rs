@@ -3,11 +3,17 @@ use types::{H160, U256};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TransactionCall {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub from: Option<H160>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub to: Option<H160>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub gas: Option<U256>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub gas_price: Option<U256>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<U256>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub data: Option<String>
 }
 
