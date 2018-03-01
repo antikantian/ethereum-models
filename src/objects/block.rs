@@ -26,6 +26,7 @@ pub enum BlockNumber<'a> {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Block {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub hash: Option<H256>,
     pub parent_hash: H256,
     pub sha3_uncles: H256,
@@ -33,6 +34,7 @@ pub struct Block {
     pub state_root: H256,
     pub transactions_root: H256,
     pub receipts_root: H256,
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(deserialize_with = "opt_u64_from_str")]
     pub number: Option<u64>,
     pub gas_used: U256,
@@ -41,7 +43,9 @@ pub struct Block {
     pub timestamp: U256,
     pub difficulty: U256,
     pub total_difficulty: U256,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub transactions: Vec<BlockTx>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub size: Option<U256>
 }
 

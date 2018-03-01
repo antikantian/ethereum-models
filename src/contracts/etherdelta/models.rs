@@ -19,6 +19,7 @@ pub struct EtherDeltaTransaction {
     pub action: EtherDeltaAction,
     /// The decoded logs/events (if any) that were generated after this transaction was executed
     /// in a block.  Note that this will be `None` if the transaction failed.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub event: Option<EtherDeltaEvent>
 }
 
@@ -39,9 +40,11 @@ pub struct EtherDeltaProxyTransaction {
     pub receipt: TransactionReceipt,
     /// The call chain produced by the transaction's trace.  The action is `None` in
     /// the case that the proxy contract calls methods outside of the EtherDelta contract.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub actions: Vec<(ParityTrace, Option<EtherDeltaAction>)>,
     /// Any EtherDelta event generated after this transaction was executed.  This is not
     /// comprehensive, as a proxy contract might generate events external to EtherDelta.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub events: Vec<EtherDeltaEvent>
 }
 

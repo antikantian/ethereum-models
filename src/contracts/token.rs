@@ -13,5 +13,6 @@ pub struct ERC20 {
     pub total_supply: U256,
     /// Link to the token's icon (not part of ERC20 standard.
     /// Used by Etherswap internally.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub icon_url: Option<String>
 }

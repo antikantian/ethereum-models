@@ -77,13 +77,20 @@ pub trait LogLike {
 #[serde(rename_all = "camelCase")]
 pub struct Log {
     pub address: H160,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub topics: Vec<H256>,
     pub data: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub block_hash: Option<H256>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub block_number: Option<U256>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_hash: Option<H256>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_index: Option<U256>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub log_index: Option<U256>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_log_index: Option<U256>,
     #[serde(rename="type")]
     pub log_type: String

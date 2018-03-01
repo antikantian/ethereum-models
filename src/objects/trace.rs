@@ -25,8 +25,10 @@ pub struct ParityTrace {
     pub action: Action,
     pub block_hash: H256,
     pub block_number: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub result: Option<ActionResult>,
     pub subtraces: u8,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub trace_address: Vec<u8>,
     pub transaction_hash: H256,
     pub transaction_position: u64,
@@ -65,25 +67,35 @@ impl ParityTrace {
 #[derive(Hash, Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all="camelCase")]
 pub struct Action {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub call_type: Option<CallType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub from: Option<H160>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub balance: Option<U256>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_address: Option<H160>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub gas: Option<U256>,
     #[serde(default)]
     pub input: String,
     #[serde(default)]
     pub init: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub to: Option<H160>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<U256>
 }
 
 #[derive(Hash, Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all="camelCase")]
 pub struct ActionResult {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<H160>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub code: Option<String>,
     pub gas_used: U256,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub output: Option<String>
 }
 

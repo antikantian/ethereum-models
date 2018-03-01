@@ -67,8 +67,11 @@ pub trait TransactionLike {
 pub struct Transaction {
     pub hash: H256,
     pub nonce: U256,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub block_hash: Option<H256>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub block_number: Option<U256>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(deserialize_with = "opt_u64_from_str")]
     pub transaction_index: Option<u64>,
     pub from: H160,
@@ -135,7 +138,9 @@ pub struct TransactionReceipt {
     pub block_hash: H256,
     pub cumulative_gas_used: U256,
     pub gas_used: U256,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub contract_address: Option<H160>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub logs: Vec<Log>
 }
 
