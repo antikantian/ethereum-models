@@ -6,6 +6,7 @@ use std::string::ToString;
 use fixed_hash::clean_0x;
 
 use error::{Error, ErrorKind};
+use types::{H160, U256};
 
 pub trait NamedFunction {
     fn get_function(&self) -> ContractFunction;

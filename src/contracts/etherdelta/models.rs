@@ -9,6 +9,7 @@ type User = H160;
 type Sender = H160;
 
 /// A transaction sent directly to the EtherDelta smart contract.
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EtherDeltaTransaction {
     /// The actual transaction.
     pub tx: Transaction,
@@ -30,6 +31,7 @@ impl EtherDeltaTransaction {
 /// EtherDelta smart contract, but was NOT sent directly to the contract address.
 /// That is, another contract is being used as a proxy to call the EtherDelta
 /// contract's methods.
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EtherDeltaProxyTransaction {
     /// The actual transaction.
     pub tx: Transaction,
@@ -45,7 +47,7 @@ pub struct EtherDeltaProxyTransaction {
 
 /// The action specified in a transaction's input.  This will either be a call to a constant
 /// method, such as a balance check, or a call with change's to the EVM storage, like a trade.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum EtherDeltaAction {
     /// A cancellation of an on-chain order.  Rarely seen.
     CancelOrder(OrderData),
@@ -107,7 +109,7 @@ impl NamedFunction for EtherDeltaAction {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum EtherDeltaEvent {
     Cancel(OrderData, User),
     Deposit(Token, User, Amount, Balance),
@@ -117,7 +119,7 @@ pub enum EtherDeltaEvent {
 }
 
 /// The order data decoded either from a transaction's input, or from the transaction's log data.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OrderData {
     /// The address of the token being received by the order's maker, given by the taker.
     /// Ether is specified by `0x0...0`.
@@ -144,7 +146,7 @@ pub struct OrderData {
 }
 
 /// The data decoded from successful on-chain calls to `order`.  Rarely seen.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OrderLog {
     /// Same as in `OrderData`.
     pub token_get: H160,
@@ -163,7 +165,7 @@ pub struct OrderLog {
 }
 
 /// The data decoded from successful calls to `trade`.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TradeLog {
     /// Same as in `OrderData`.
     pub token_get: H160,
