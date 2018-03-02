@@ -1,4 +1,8 @@
+use std::hash::{Hash, Hasher};
+
+use twox_hash::XxHash;
 use contracts::{ContractFunction, NamedFunction};
+use super::constants::ETHERDELTA_ADDRESS;
 use ::objects::*;
 use ::types::*;
 
@@ -146,6 +150,27 @@ pub struct OrderData {
     /// `s` component of the signature data used in validation.  Used when the `trade`
     /// function calls `ecrecover`.
     pub s: String,
+}
+
+impl OrderData {
+    pub fn hash_order(&self) -> u64 {
+        let mut hasher = XxHash::default();
+        let hash_string = format!(
+            "{:?}{:?}{:?}{:?}{:?}{:?}{:?}{:?}{}{}",
+            &*ETHERDELTA_ADDRESS,
+            &self.token_get,
+            &self.amount_get,
+            &self.token_give,
+            &self.amount_give,
+            &self.expires,
+            &self.nonce,
+            &self.v,
+            &self.r,
+            &self.s
+        );
+        hash_string.hash(&mut hasher);
+        hasher.finish()
+    }
 }
 
 /// The data decoded from successful on-chain calls to `order`.  Rarely seen.
