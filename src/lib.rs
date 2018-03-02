@@ -25,6 +25,7 @@ pub mod types;
 pub use error::{Error, ErrorKind};
 
 use serde::de::{self, Deserialize, Deserializer};
+use serde::ser::Serializer;
 
 fn opt_u64_from_str<'de, D>(deserializer: D) -> Result<Option<u64>, D::Error>
     where D: Deserializer<'de>

@@ -1,6 +1,6 @@
 use std::hash::{Hash, Hasher};
 
-use ethereum_types::{H160, H256, U256};
+use types::{H160, H256, U128, U256};
 use rustc_serialize::hex::ToHex;
 use twox_hash::XxHash;
 use web3::types::{
@@ -32,7 +32,7 @@ pub trait TransactionLike {
         self.get_tx().block_number.as_ref()
     }
 
-    fn transaction_index(&self) -> Option<u64> {
+    fn transaction_index(&self) -> Option<U128> {
         self.get_tx().transaction_index
     }
 
@@ -72,8 +72,7 @@ pub struct Transaction {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub block_number: Option<U256>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(deserialize_with = "opt_u64_from_str")]
-    pub transaction_index: Option<u64>,
+    pub transaction_index: Option<U128>,
     pub from: H160,
     pub to: Option<H160>,
     pub value: U256,
@@ -104,7 +103,7 @@ impl From<Web3Transaction> for Transaction {
             nonce: tx.nonce,
             block_hash: tx.block_hash,
             block_number: tx.block_number,
-            transaction_index: tx.transaction_index.map(|i| i.low_u64()),
+            transaction_index: tx.transaction_index,
             from: tx.from,
             to: tx.to,
             value: tx.value,
@@ -132,8 +131,7 @@ pub trait ReceiptLike {
 #[serde(rename_all = "camelCase")]
 pub struct TransactionReceipt {
     pub transaction_hash: H256,
-    #[serde(deserialize_with = "u64_from_str")]
-    pub transaction_index: u64,
+    pub transaction_index: U128,
     pub block_number: U256,
     pub block_hash: H256,
     pub cumulative_gas_used: U256,
@@ -148,7 +146,7 @@ impl From<Web3TransactionReceipt> for TransactionReceipt {
     fn from(tr: Web3TransactionReceipt) -> Self {
         TransactionReceipt {
             transaction_hash: tr.transaction_hash,
-            transaction_index: tr.transaction_index.low_u64(),
+            transaction_index: tr.transaction_index,
             block_number: tr.block_number,
             block_hash: tr.block_hash,
             cumulative_gas_used: tr.cumulative_gas_used,

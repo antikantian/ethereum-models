@@ -1,7 +1,7 @@
 use std::u64;
 use std::cmp::Ordering;
 
-use ethereum_types::{H160, H256, U256};
+use types::{H160, H256, U128, U256};
 use rustc_serialize::hex::ToHex;
 use web3::types::{Block as Web3Block, Transaction as Web3Transaction};
 
@@ -35,8 +35,7 @@ pub struct Block {
     pub transactions_root: H256,
     pub receipts_root: H256,
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(deserialize_with = "opt_u64_from_str")]
-    pub number: Option<u64>,
+    pub number: Option<U128>,
     pub gas_used: U256,
     pub gas_limit: U256,
     pub extra_data: String,
@@ -77,7 +76,7 @@ impl From<Web3Block<Web3Transaction>> for Block {
             state_root: block.state_root,
             transactions_root: block.transactions_root,
             receipts_root: block.receipts_root,
-            number: block.number.map(|num| num.low_u64()),
+            number: block.number,
             gas_used: block.gas_used,
             gas_limit: block.gas_limit,
             extra_data: String::from("0x") + &block.extra_data.0.to_hex(),
@@ -102,7 +101,7 @@ impl From<Web3Block<H256>> for Block {
             state_root: block.state_root,
             transactions_root: block.transactions_root,
             receipts_root: block.receipts_root,
-            number: block.number.map(|num| num.low_u64()),
+            number: block.number,
             gas_used: block.gas_used,
             gas_limit: block.gas_limit,
             extra_data: String::from("0x") + &block.extra_data.0.to_hex(),
@@ -122,7 +121,7 @@ mod tests {
     use std::str::FromStr;
     use serde_json;
     use super::Block;
-    use types::{H160, H256, U256};
+    use types::{H160, H256, U128, U256};
 
     #[test]
     fn block_deserializes_only_hashes() {
@@ -169,7 +168,7 @@ mod tests {
             state_root: some_h256.clone(),
             transactions_root: some_h256.clone(),
             receipts_root: some_h256.clone(),
-            number: Some(5000000_u64),
+            number: Some(U128::from(5000000_u64)),
             gas_used: some_u256.clone(),
             gas_limit: some_u256.clone(),
             extra_data: "none".to_string(),
@@ -188,7 +187,7 @@ mod tests {
             state_root: some_h256.clone(),
             transactions_root: some_h256.clone(),
             receipts_root: some_h256.clone(),
-            number: Some(5000001_u64),
+            number: Some(U128::from(5000000_u64)),
             gas_used: some_u256.clone(),
             gas_limit: some_u256.clone(),
             extra_data: "none".to_string(),
@@ -221,7 +220,7 @@ mod tests {
             state_root: some_h256.clone(),
             transactions_root: some_h256.clone(),
             receipts_root: some_h256.clone(),
-            number: Some(5000000_u64),
+            number: Some(U128::from(5000000_u64)),
             gas_used: some_u256.clone(),
             gas_limit: some_u256.clone(),
             extra_data: "none".to_string(),
@@ -240,7 +239,7 @@ mod tests {
             state_root: some_h256.clone(),
             transactions_root: some_h256.clone(),
             receipts_root: some_h256.clone(),
-            number: Some(5000001_u64),
+            number: Some(U128::from(5000000_u64)),
             gas_used: some_u256.clone(),
             gas_limit: some_u256.clone(),
             extra_data: "none".to_string(),
@@ -259,7 +258,7 @@ mod tests {
             state_root: some_h256.clone(),
             transactions_root: some_h256.clone(),
             receipts_root: some_h256.clone(),
-            number: Some(5000002_u64),
+            number: Some(U128::from(5000000_u64)),
             gas_used: some_u256.clone(),
             gas_limit: some_u256.clone(),
             extra_data: "none".to_string(),
@@ -274,6 +273,6 @@ mod tests {
         blocks.sort_by(|a, b| a.partial_cmp(b).unwrap());
         let block_seq = blocks.iter().map(|b| b.number).collect::<Vec<Option<u64>>>();
 
-        assert_eq!(block_seq, vec![Some(5000000_u64), Some(5000001_u64), Some(5000002_u64)]);
+        assert_eq!(block_seq, vec![Some(U128::from(5000000_u64)), Some(U128::from(5000000_u64)), Some(U128::from(5000000_u64))]);
     }
 }
