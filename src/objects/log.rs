@@ -125,7 +125,7 @@ impl From<Web3Log> for Log {
             transaction_index: log.transaction_index,
             log_index: log.log_index,
             transaction_log_index: log.transaction_log_index,
-            log_type: log.log_type
+            log_type: log.log_type.unwrap_or("unknown".to_string())
         }
     }
 }
