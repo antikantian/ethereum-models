@@ -171,6 +171,22 @@ impl OrderData {
         hash_string.hash(&mut hasher);
         hasher.finish()
     }
+
+    pub fn hash_trade(&self, tx_hash: &H256, maker: &H160, taker: &H160, amount: &U256) -> u64 {
+        let mut hasher = XxHash::default();
+        let hash_string = format!(
+            // token_get, token_give, amount, maker, taker, tx_hash
+            "{:?}{:?}{:?}{:?}{:?}{:?}",
+            &self.token_get,
+            &self.token_give,
+            &amount,
+            &maker,
+            &taker,
+            &tx_hash
+        );
+        hash_string.hash(&mut hasher);
+        hasher.finish()
+    }
 }
 
 /// The data decoded from successful on-chain calls to `order`.  Rarely seen.
@@ -214,4 +230,22 @@ pub struct TradeLog {
     /// Not native to EtherDelta contract events.  This price is calculated during processing,
     /// since the calculation relies on knowledge of a token contract's `decimals` field.
     pub price: f64
+}
+
+impl TradeLog {
+    pub fn hash_trade(&self, tx_hash: &H256) -> u64 {
+        let mut hasher = XxHash::default();
+        let hash_string = format!(
+            // token_get, token_give, amount, maker, taker, tx_hash
+            "{:?}{:?}{:?}{:?}{:?}{:?}",
+            &self.token_get,
+            &self.token_give,
+            &self.amount_give,
+            &self.maker,
+            &self.taker,
+            &tx_hash
+        );
+        hash_string.hash(&mut hasher);
+        hasher.finish()
+    }
 }
