@@ -3,7 +3,6 @@ use std::cmp::Ordering;
 
 use types::{H160, H256, U128, U256};
 use rustc_serialize::hex::ToHex;
-use web3::types::{Block as Web3Block, Transaction as Web3Transaction};
 
 use super::Transaction;
 use opt_u64_from_str;
@@ -59,56 +58,6 @@ impl PartialOrd for Block {
         self.number
             .and_then(|ba| other.number.map(|bb| (ba, bb)))
             .map(|(ba, bb)| ba.cmp(&bb))
-    }
-}
-
-impl From<Web3Block<Web3Transaction>> for Block {
-    fn from(block: Web3Block<Web3Transaction>) -> Self {
-        Block {
-            hash: block.hash,
-            parent_hash: block.parent_hash,
-            sha3_uncles: block.uncles_hash,
-            author: block.author,
-            state_root: block.state_root,
-            transactions_root: block.transactions_root,
-            receipts_root: block.receipts_root,
-            number: block.number,
-            gas_used: block.gas_used,
-            gas_limit: block.gas_limit,
-            extra_data: String::from("0x") + &block.extra_data.0.to_hex(),
-            timestamp: block.timestamp,
-            difficulty: block.difficulty,
-            total_difficulty: block.total_difficulty,
-            transactions: block.transactions
-                .into_iter()
-                .map(|tx| BlockTx::Tx(Transaction::from(tx))).collect(),
-            size: block.size
-        }
-    }
-}
-
-impl From<Web3Block<H256>> for Block {
-    fn from(block: Web3Block<H256>) -> Self {
-        Block {
-            hash: block.hash,
-            parent_hash: block.parent_hash,
-            sha3_uncles: block.uncles_hash,
-            author: block.author,
-            state_root: block.state_root,
-            transactions_root: block.transactions_root,
-            receipts_root: block.receipts_root,
-            number: block.number,
-            gas_used: block.gas_used,
-            gas_limit: block.gas_limit,
-            extra_data: String::from("0x") + &block.extra_data.0.to_hex(),
-            timestamp: block.timestamp,
-            difficulty: block.difficulty,
-            total_difficulty: block.total_difficulty,
-            transactions: block.transactions
-                .into_iter()
-                .map(|tx| BlockTx::Hash(tx)).collect(),
-            size: block.size
-        }
     }
 }
 

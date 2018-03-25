@@ -3,10 +3,6 @@ use std::hash::{Hash, Hasher};
 use types::{H160, H256, U128, U256};
 use rustc_serialize::hex::ToHex;
 use twox_hash::XxHash;
-use web3::types::{
-    Transaction as Web3Transaction,
-    TransactionReceipt as Web3TransactionReceipt
-};
 
 use {u64_from_str, opt_u64_from_str};
 use objects::Log;
@@ -93,24 +89,6 @@ impl Transaction {
     }
 }
 
-impl From<Web3Transaction> for Transaction {
-    fn from(tx: Web3Transaction) -> Self {
-        Transaction {
-            hash: tx.hash,
-            nonce: tx.nonce,
-            block_hash: tx.block_hash,
-            block_number: tx.block_number,
-            transaction_index: tx.transaction_index,
-            from: tx.from,
-            to: tx.to,
-            value: tx.value,
-            gas_price: tx.gas_price,
-            gas: tx.gas,
-            input: String::from("0x") + &tx.input.0.to_hex()
-        }
-    }
-}
-
 pub trait ReceiptLike {
     fn get_receipt(&self) -> &TransactionReceipt;
 
@@ -135,19 +113,4 @@ pub struct TransactionReceipt {
     pub gas_used: U256,
     pub contract_address: Option<H160>,
     pub logs: Vec<Log>
-}
-
-impl From<Web3TransactionReceipt> for TransactionReceipt {
-    fn from(tr: Web3TransactionReceipt) -> Self {
-        TransactionReceipt {
-            transaction_hash: tr.transaction_hash,
-            transaction_index: tr.transaction_index,
-            block_number: tr.block_number,
-            block_hash: tr.block_hash,
-            cumulative_gas_used: tr.cumulative_gas_used,
-            gas_used: tr.gas_used,
-            contract_address: tr.contract_address,
-            logs: tr.logs.into_iter().map(|web3_log| Log::from(web3_log)).collect()
-        }
-    }
 }

@@ -4,7 +4,6 @@ extern crate fixed_hash;
 extern crate num;
 extern crate rustc_serialize;
 extern crate twox_hash;
-extern crate web3;
 
 #[macro_use]
 extern crate error_chain;

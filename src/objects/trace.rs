@@ -1,7 +1,6 @@
 use std::hash::{Hash, Hasher};
 
 use twox_hash::XxHash;
-use web3::types::{Log as Web3Log};
 
 use types::{H160, H256, U256};
 

@@ -2,7 +2,6 @@ use std::hash::{Hash, Hasher};
 
 use rustc_serialize::hex::ToHex;
 use twox_hash::XxHash;
-use web3::types::{Log as Web3Log};
 
 use types::{H160, H256, U256};
 
@@ -113,20 +112,4 @@ impl Log {
     }
 }
 
-impl From<Web3Log> for Log {
-    fn from(log: Web3Log) -> Self {
-        Log {
-            address: log.address,
-            topics: log.topics,
-            data: String::from("0x") + &log.data.0.to_hex(),
-            block_hash: log.block_hash,
-            block_number: log.block_number,
-            transaction_hash: log.transaction_hash,
-            transaction_index: log.transaction_index,
-            log_index: log.log_index,
-            transaction_log_index: log.transaction_log_index,
-            log_type: log.log_type.unwrap_or("unknown".to_string())
-        }
-    }
-}
 
