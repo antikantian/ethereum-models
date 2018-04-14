@@ -187,6 +187,23 @@ impl OrderData {
         hash_string.hash(&mut hasher);
         hasher.finish()
     }
+
+    pub fn xid(&self, amount: &U256, maker: &H160, taker: &H160) -> u64 {
+        let mut hasher = XxHash::default();
+        let amount_give = self.amount_give * *amount / self.amount_get;
+        let hash_string = format!(
+            "{:?}{:?}{:?}{:?}{:?}{:?}{:?}",
+            &*ETHERDELTA_ADDRESS,
+            &self.token_get,
+            &amount,
+            &self.token_give,
+            &amount_give,
+            &maker,
+            &taker
+        );
+        hash_string.hash(&mut hasher);
+        hasher.finish()
+    }
 }
 
 /// The data decoded from successful on-chain calls to `order`.  Rarely seen.
@@ -244,6 +261,24 @@ impl TradeLog {
             &self.maker,
             &self.taker,
             &tx_hash
+        );
+        hash_string.hash(&mut hasher);
+        hasher.finish()
+    }
+
+    //Trade(tokenGet, amount, tokenGive, amountGive * amount / amountGet, user, msg.sender);
+
+    pub fn xid(&self) -> u64 {
+        let mut hasher = XxHash::default();
+        let hash_string = format!(
+            "{:?}{:?}{:?}{:?}{:?}{:?}{:?}",
+            &*ETHERDELTA_ADDRESS,
+            &self.token_get,
+            &self.amount_get,
+            &self.token_give,
+            &self.amount_give,
+            &self.maker,
+            &self.taker
         );
         hash_string.hash(&mut hasher);
         hasher.finish()
