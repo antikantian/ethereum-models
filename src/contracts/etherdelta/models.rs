@@ -190,7 +190,14 @@ impl OrderData {
 
     pub fn xid(&self, amount: &U256, maker: &H160, taker: &H160) -> u64 {
         let mut hasher = XxHash::default();
-        let amount_give = self.amount_give * *amount / self.amount_get;
+        let amount_give = {
+            if self.amount_get == U256::from(0) {
+                self.amount_give * *amount / U256::from(1)
+            } else {
+                self.amount_give * *amount / self.amount_get
+            }
+        };
+
         let hash_string = format!(
             "{:?}{:?}{:?}{:?}{:?}{:?}{:?}",
             &*ETHERDELTA_ADDRESS,
@@ -265,8 +272,6 @@ impl TradeLog {
         hash_string.hash(&mut hasher);
         hasher.finish()
     }
-
-    //Trade(tokenGet, amount, tokenGive, amountGive * amount / amountGet, user, msg.sender);
 
     pub fn xid(&self) -> u64 {
         let mut hasher = XxHash::default();
